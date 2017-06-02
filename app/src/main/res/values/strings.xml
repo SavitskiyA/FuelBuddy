@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">FuelBuddy</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="byDistance">By distance</string>
+    <string name="byCost">By cost</string>
+    <string name="rubleSymbolJava">\u20BD</string>
+    <string name="playServiceError">Can\'t connect to play services</string>
+    <string name="playServiceAvailable">Google Play Services available</string>
+    <string name="fileName">zapravki.csv</string>
+    <string name="map_type_normal">Normal</string>
+    <string name="map_type_terrain">Terrain</string>
+    <string name="map_type_satellite">Sattelite</string>
+    <string name="map_type_hybrid">Hybrid</string>
+
+</resources>

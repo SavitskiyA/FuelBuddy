@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="rowBottomMrgin">0.5dp</dimen>
+    <dimen name="tabLayoutHeight">60dp</dimen>
+    <dimen name="listViewRowHeight">70dp</dimen>
+    <dimen name="bottomTabPadding">8dp</dimen>
+    <dimen name="zeroDp">0dp</dimen>
+    <dimen name="mainRowMargin">12dp</dimen>
+    <dimen name="verticalRowMargin">14dp</dimen>
+    <dimen name="costTextSize">16sp</dimen>
+    <dimen name="currencyTextMargin">6sp</dimen>
+    <dimen name="hugeVerticalRowMargin">22sp</dimen>
+    <dimen name="currancyTextSize">14sp</dimen>
+    <dimen name="hoursTextSize">10sp</dimen>
+    <dimen name="smallVerticalMargin">4dp</dimen>
+    <dimen name="verticalGasIconMargin">8dp</dimen>
+    <dimen name="smallTextMargin">2dp</dimen>
+    <dimen name="verticalDistancetextMargin">16dp</dimen>
+</resources>
