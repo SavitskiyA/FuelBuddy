@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
-    android:layout_height="@dimen/tabLayoutHeight"
-    android:orientation="horizontal"
-    android:background="@color/rowBackColor"
-    android:layout_marginBottom="@dimen/rowBottomMrgin">
+    android:layout_height="@dimen/size_row_hight"
+    android:layout_marginBottom="@dimen/margin_0.5dp"
+    android:background="@color/colorRowBgn"
+    android:orientation="horizontal">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/mainRowMargin"
+        android:layout_marginStart="@dimen/margin_12dp"
         android:layout_weight="1.8">
 
         <TextView
             android:id="@+id/textViewCost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/verticalGasIconMargin"
-            android:text="35.5"
-            android:textColor="@color/costTextColor"
-            android:textSize="@dimen/costTextSize"
+            android:layout_marginTop="@dimen/margin_10dp"
+            android:text="@string/text_test_price"
+            android:textColor="@color/colorTextPrice"
+            android:textSize="@dimen/text_row_price"
             android:textStyle="bold" />
 
         <TextView
@@ -28,12 +29,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/textViewHours"
-            android:layout_marginStart="@dimen/smallTextMargin"
-            android:layout_marginBottom="@dimen/smallTextMargin"
+            android:layout_marginStart="@dimen/margin_2dp"
             android:layout_toEndOf="@id/textViewCost"
-            android:text="@string/rubleSymbolJava"
-            android:textColor="@color/costTextColor"
-            android:textSize="@dimen/currancyTextSize" />
+            android:text="@string/symbol_ruble_Java"
+            android:textColor="@color/colorTextPrice"
+            android:textSize="@dimen/text_row_rouble_java" />
 
 
         <TextView
@@ -42,16 +42,15 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textViewCost"
             android:layout_centerVertical="true"
-            android:layout_marginTop="@dimen/smallTextMargin"
-            android:text="hour ago"
-            android:textColor="@color/hoursTextColor"
-            android:textSize="@dimen/hoursTextSize" />
+            android:layout_marginTop="@dimen/margin_2dp"
+            android:text="@string/text_test_hours"
+            android:textColor="@color/colorTextHours"
+            android:textSize="@dimen/text_infowindow_address" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:layout_weight="2">
 
         <ImageView
@@ -59,34 +58,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/verticalGasIconMargin" />
+            android:layout_marginTop="@dimen/margin_8dp" />
     </RelativeLayout>
 
 
     <RelativeLayout
-        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/mainRowMargin">
+        android:layout_marginStart="@dimen/margin_12dp"
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/textViewName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/verticalGasIconMargin"
-            android:text="Автозаправка Shell"
-            android:textSize="@dimen/costTextSize"
-            android:textColor="@color/gasNameColor"/>
+            android:layout_marginTop="@dimen/margin_8dp"
+            android:text="@string/text_test_name"
+            android:textColor="@color/colorGasName"
+            android:textSize="@dimen/text_row_price" />
+
 
         <TextView
             android:id="@+id/textViewAdress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textViewName"
-            android:layout_marginTop="@dimen/smallTextMargin"
-            android:text="ул. Садовническая 57"
-            android:textSize="@dimen/currancyTextSize"
-            android:textColor="@color/adressColor"/>
+            android:layout_marginTop="@dimen/margin_2dp"
+            android:text="@string/text_test_address"
+            android:textColor="@color/colorTextAddress"
+            android:textSize="@dimen/text_row_rouble_java" />
 
 
     </RelativeLayout>
@@ -101,20 +101,38 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="@dimen/margin_12dp"
             android:background="@drawable/ic_bp">
 
-            <TextView
-                android:id="@+id/textViewDistance"
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/verticalDistancetextMargin"
-                android:text="1,3 км"
-                android:textColor="@color/distanceTextColor"
-                android:textSize="@dimen/currancyTextSize"
-                android:textStyle="bold" />
+                android:layout_marginBottom="@dimen/margin_16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_test_distance"
+                    android:textColor="@color/colorTextDistance"
+                    android:textSize="@dimen/text_row_rouble_java"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_2dp"
+                    android:text="@string/text_km"
+                    android:textColor="@color/colorTextDistance"
+                    android:textSize="@dimen/text_row_rouble_java"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
 
         </RelativeLayout>
     </FrameLayout>

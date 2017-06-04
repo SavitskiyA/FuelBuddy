@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="grey">#3a3a3a</color>
-    <color name="tabTextColor">#6a6a6a</color>
-    <color name="tabSelectedTextColor">#f8f8f8</color>
-    <color name="rowBackColor">#f9f8f4</color>
-    <color name="costTextColor">#d33232</color>
-    <color name="hoursTextColor">#242424</color>
-    <color name="gasNameColor">#4c93b0</color>
-    <color name="adressColor">#565656</color>
-    <color name="distanceTextColor">#4c93b0</color>
-    <color name="recyclerViewBack">#e1dac5</color>
+    <color name="colorPrimaryDark">#133340</color>
+    <color name="colorAccent">#133340</color>
+    <color name="colorGrey">#3a3a3a</color>
+    <color name="сolorTabText">#6a6a6a</color>
+    <color name="colorTabSelectedText">#f8f8f8</color>
+    <color name="colorRowBgn">#f9f8f4</color>
+    <color name="colorRowBgnP">#dededc</color>
+    <color name="colorTextPrice">#d33232</color>
+    <color name="colorTextHours">#242424</color>
+    <color name="colorGasName">#4c93b0</color>
+    <color name="colorTextAddress">#565656</color>
+    <color name="colorTextDistance">#4c93b0</color>
+    <color name="colorRecyclerViewBgn">#e1dac5</color>
 
 </resources>

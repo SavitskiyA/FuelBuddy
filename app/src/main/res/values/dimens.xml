@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="rowBottomMrgin">0.5dp</dimen>
-    <dimen name="tabLayoutHeight">60dp</dimen>
-    <dimen name="listViewRowHeight">70dp</dimen>
-    <dimen name="bottomTabPadding">8dp</dimen>
-    <dimen name="zeroDp">0dp</dimen>
-    <dimen name="mainRowMargin">12dp</dimen>
-    <dimen name="verticalRowMargin">14dp</dimen>
-    <dimen name="costTextSize">16sp</dimen>
-    <dimen name="currencyTextMargin">6sp</dimen>
-    <dimen name="hugeVerticalRowMargin">22sp</dimen>
-    <dimen name="currancyTextSize">14sp</dimen>
-    <dimen name="hoursTextSize">10sp</dimen>
-    <dimen name="smallVerticalMargin">4dp</dimen>
-    <dimen name="verticalGasIconMargin">8dp</dimen>
-    <dimen name="smallTextMargin">2dp</dimen>
-    <dimen name="verticalDistancetextMargin">16dp</dimen>
+
+
+    <dimen name="padding_tab_layout">8dp</dimen>
+    <dimen name="zero_dp">0dp</dimen>
+
+    <dimen name="size_bottom_sheet_hight">304dp</dimen>
+    <dimen name="size_bottom_sheet_peek_hight">124dp</dimen>
+    <dimen name="size_tab_layout_hight">50dp</dimen>
+    <dimen name="size_toolbar_height">112dp</dimen>
+    <dimen name="size_first_row_toolber_height">56dp</dimen>
+    <dimen name="size_infoWindow_address_width">120dp</dimen>
+    <dimen name="size_infoWindow_address_text_width">16sp</dimen>
+    <dimen name="size_row_hight">60dp</dimen>
+
+    <dimen name="margin_64dp_recyclerViewTopMargin">64dp</dimen>
+    <dimen name="margin_20dp_tab_layout_top">20dp</dimen>
+    <dimen name="margin_16dp">16dp</dimen>
+    <dimen name="margin_12dp">12dp</dimen>
+    <dimen name="margin_10dp">10dp</dimen>
+    <dimen name="margin_8dp">8dp</dimen>
+    <dimen name="margin_7dp">7dp</dimen>
+    <dimen name="margin_6dp">6dp</dimen>
+    <dimen name="margin_5dp">5dp</dimen>
+    <dimen name="margin_4dp">4dp</dimen>
+    <dimen name="margin_2dp">2dp</dimen>
+    <dimen name="margin_0.5dp">0.5dp</dimen>
+
+
+    <dimen name="text_toolBarTitle">20sp</dimen>
+    <dimen name="text_infowindow_address">10sp</dimen>
+    <dimen name="text_infowindow_price">11sp</dimen>
+    <dimen name="text_row_rouble_java">14sp</dimen>
+    <dimen name="text_tab_layout">16sp</dimen>
+    <dimen name="text_row_price">16sp</dimen>
+
+
 </resources>

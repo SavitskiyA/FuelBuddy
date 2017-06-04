@@ -1,15 +1,26 @@
 <resources>
     <string name="app_name">FuelBuddy</string>
+    <string name="app_toolBar_title">Fuel Buddy</string>
     <string name="title_activity_maps">Map</string>
-    <string name="byDistance">By distance</string>
-    <string name="byCost">By cost</string>
-    <string name="rubleSymbolJava">\u20BD</string>
-    <string name="playServiceError">Can\'t connect to play services</string>
-    <string name="playServiceAvailable">Google Play Services available</string>
-    <string name="fileName">zapravki.csv</string>
+    <string name="by_distance">По расстоянию</string>
+    <string name="by_cost">По стоимости</string>
+    <string name="symbol_ruble_Java">\u20BD</string>
+    <string name="google__play_service_error">Can\'t connect to play services</string>
+    <string name="google_play_service_available">Google Play Services available</string>
+    <string name="csv_file_name">zapravki.csv</string>
     <string name="map_type_normal">Normal</string>
     <string name="map_type_terrain">Terrain</string>
     <string name="map_type_satellite">Sattelite</string>
     <string name="map_type_hybrid">Hybrid</string>
+    <string name="gas_search_hint_text">Поиск заправки</string>
+    <string name="text_test_address">просп. Тараса шевченко 34</string>
+    <string name="text_test_price">34.4</string>
+    <string name="text_test_hours">hour ago</string>
+    <string name="text_test_name">Автозаправка Shell</string>
+    <string name="text_test_distance">1,3</string>
+    <string name="text_km">км</string>
+    <string name="min_required_sdk">Min required SDK version is 4.4 KITKAT</string>
+    <string name="gas_data_source_error">Gas station data source error</string>
+    <string name="dummy_action">Dummy-action</string>
 
 </resources>

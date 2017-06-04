@@ -94,7 +94,14 @@ public class GasModel {
         GasModel gasModel = (GasModel) o;
 
         if (Double.compare(gasModel.lat, lat) != 0) return false;
-        return Double.compare(gasModel.lng, lng) == 0;
+        if (Double.compare(gasModel.lng, lng) != 0) return false;
+        if (cost != null ? !cost.equals(gasModel.cost) : gasModel.cost != null) return false;
+        if (hours != null ? !hours.equals(gasModel.hours) : gasModel.hours != null) return false;
+        if (icon != null ? !icon.equals(gasModel.icon) : gasModel.icon != null) return false;
+        if (name != null ? !name.equals(gasModel.name) : gasModel.name != null) return false;
+        if (adress != null ? !adress.equals(gasModel.adress) : gasModel.adress != null)
+            return false;
+        return distance != null ? distance.equals(gasModel.distance) : gasModel.distance == null;
 
     }
 
@@ -102,8 +109,14 @@ public class GasModel {
     public int hashCode() {
         int result;
         long temp;
+        result = cost != null ? cost.hashCode() : 0;
+        result = 31 * result + (hours != null ? hours.hashCode() : 0);
+        result = 31 * result + (icon != null ? icon.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (adress != null ? adress.hashCode() : 0);
+        result = 31 * result + (distance != null ? distance.hashCode() : 0);
         temp = Double.doubleToLongBits(lat);
-        result = (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(lng);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
