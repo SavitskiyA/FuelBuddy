@@ -66,6 +66,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
     public interface MarkerListener {
         public void onMarkerClick(int position);
+        public List<GasModel> getModels();
     }
 
     public static Drawable getDrawableIcon(GasModel gasModel, Context context) {

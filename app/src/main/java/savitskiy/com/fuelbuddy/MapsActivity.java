@@ -1,11 +1,14 @@
 package savitskiy.com.fuelbuddy;
 
+import android.app.Fragment;
+import android.content.pm.ActivityInfo;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -40,85 +44,74 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private BottomSheetBehavior mBottomSheetBehavior;
     private GoogleMap mGoogleMap;
     private TabLayout tabLayout;
-    private RecyclerView recyclerView;
-    private RecyclerAdapter recyclerAdapter;
+    private ViewPager viewPager;
+
     private List<GasModel> gasModels;
     private Map<GasModel, Marker> map;
     private Map<Marker, GasModel> mMap;
     private ImageView imageViewMan, imageViewSettings, imageViewMarker, imageViewAdd;
     private EditText editTextSearch;
+    private SectionPageAdapter sectionPageAdapter;
+    private Adaptable adaptableFragment;
+    private boolean fragmentAttached;
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         //Initialize google map
         initGoogleMap();
-        //get gas list of gas models from .csv file
-        initGasModels();
-//sort gas model list befor adapter downloading
-        Collections.sort(gasModels, sortByDistance);
+
+
+        //
+        gasModels = initGasModels();
 
         map = new HashMap<>();
         mMap = new HashMap<>();
 
         bottomSheet = findViewById(R.id.bottom_sheet);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-
-
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
         imageViewMan = (ImageView) findViewById(R.id.imageViewMan);
         imageViewSettings = (ImageView) findViewById(R.id.imageViewSettings);
         imageViewMarker = (ImageView) findViewById(R.id.imageViewMarker);
         imageViewAdd = (ImageView) findViewById(R.id.imageViewAdd);
         editTextSearch = (EditText) findViewById(R.id.editTextSearch);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         imageViewMan.setOnClickListener(this);
         imageViewSettings.setOnClickListener(this);
         imageViewMarker.setOnClickListener(this);
         imageViewAdd.setOnClickListener(this);
 
-        if (gasModels != null) {
-            recyclerAdapter = new RecyclerAdapter(gasModels, this, this);
-            recyclerView.setHasFixedSize(true);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(recyclerAdapter);
-        } else {
-            Toast.makeText(this, getResources().getString(R.string.gas_data_source_error), Toast.LENGTH_SHORT).show();
-        }
+        sectionPageAdapter = new SectionPageAdapter(getSupportFragmentManager(), this);
+        viewPager.setAdapter(sectionPageAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.by_distance)));
-        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.by_cost)));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case 0:
-                        Collections.sort(gasModels, sortByDistance);
-                        recyclerAdapter.notifyDataSetChanged();
-                        break;
-                    case 1:
-                        Collections.sort(gasModels, sortByCost);
-                        recyclerAdapter.notifyDataSetChanged();
-                        break;
-                    default:
-                        break;
-                }
-            }
 
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+            public void onPageSelected(int position) {
+                sectionPageAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
 
             }
         });
+
 
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -128,7 +121,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                MapsActivity.this.recyclerAdapter.getFilter().filter(s);
+                if (fragmentAttached) adaptableFragment.getAdapter().getFilter().filter(s);
             }
 
             @Override
@@ -139,38 +132,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public static final Comparator<GasModel> sortByDistance = new Comparator<GasModel>() {
-        @Override
-        public int compare(GasModel o1, GasModel o2) {
-            return Double.compare(Double.parseDouble(o1.getDistance()), Double.parseDouble(o2.getDistance()));
-        }
-    };
-
-
-    public static final Comparator<GasModel> sortByCost = new Comparator<GasModel>() {
-        @Override
-        public int compare(GasModel o1, GasModel o2) {
-            return Double.compare(Double.parseDouble(o1.getCost()), Double.parseDouble(o2.getCost()));
-        }
-    };
-
-
-    /**
-     * Method initialize models of Gas stations. All data is pre-defined and downloaded from .csv file
-     */
-    private void initGasModels() {
-        InputStreamReader is = null;
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                is = new InputStreamReader(getAssets()
-                        .open(getResources().getString(R.string.csv_file_name)), StandardCharsets.UTF_8);
-                gasModels = DataHelper.parse(is, DataHelper.DEFAULT_SEPARATOR, this);
-            } else {
-                Toast.makeText(this, getResources().getString(R.string.min_required_sdk), Toast.LENGTH_SHORT).show();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment instanceof Adaptable) {
+            this.adaptableFragment = (Adaptable) fragment;
+            fragmentAttached = true;
         }
 
     }
@@ -212,27 +179,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     textViewStreet.setText(street);
                     textViewPrice.setText(price);
                     imageViewIcon.setBackgroundDrawable(RecyclerAdapter.getDrawableIcon(model, MapsActivity.this));
+                    setInffoWindowClickListener(model.getName());
                 }
-
-
-
                 return v;
             }
 
             @Override
             public View getInfoContents(Marker marker) {
-//                View v = getLayoutInflater().inflate(R.layout.info_window_layout, null);
-//                ImageView imageViewHeart = (ImageView) v.findViewById(R.id.imageViewHeart);
-//                TextView textViewStreet = (TextView) v.findViewById(R.id.textViewStreet);
-//                TextView textViewPrice = (TextView) v.findViewById(R.id.textViewPrice);
-//                String street = marker.getTitle();
-//                textViewStreet.setText(street);
-//                mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-//                    @Override
-//                    public void onInfoWindowClick(Marker marker) {
-//                        Toast.makeText(MapsActivity.this, "", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
                 return null;
             }
 
@@ -251,6 +204,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if (isInfoWindowShow(marker)) {
+                    return false;
+                } else {
+                    Toast.makeText(MapsActivity.this, getResources().getString(R.string.another_region), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+            }
+        });
+    }
+
+    private void setInffoWindowClickListener(final String string) {
+        mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Toast.makeText(MapsActivity.this, string, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void goToLocation(double lat, double lng) throws IOException {
@@ -289,29 +263,82 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Marker marker = map.get(gasModels.get(position));
 
         if (marker != null) {
-            marker.showInfoWindow();
+            if (isInfoWindowShow(marker)) {
+                marker.showInfoWindow();
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.another_region), Toast.LENGTH_SHORT).show();
+            }
+
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+    }
+
+    @Override
+    public List<GasModel> getModels() {
+        return gasModels;
+    }
+
+
+    private boolean isInfoWindowShow(Marker marker) {
+        Geocoder geocoder = new Geocoder(MapsActivity.this);
+        List<Address> addresses = new ArrayList<Address>();
+        Address address = null;
+        try {
+            addresses = geocoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
+            address = addresses.get(0);
+            String locality = address.getLocality();
+            if (getResources().getString(R.string.moscow).equals(locality)) return true;
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            Toast.makeText(this, e1.toString(), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return false;
     }
 
     @Override
     public void onClick(View v) {
-switch(v.getId()){
-    case R.id.imageViewMan:
-        Toast.makeText(this, getResources().getString(R.string.dummy_action), Toast.LENGTH_SHORT).show();
-        break;
-    case R.id.imageViewSettings:
-        Toast.makeText(this, getResources().getString(R.string.dummy_action), Toast.LENGTH_SHORT).show();
-        break;
-    case R.id.imageViewMarker:
-        Toast.makeText(this, getResources().getString(R.string.dummy_action), Toast.LENGTH_SHORT).show();
-        break;
-    case R.id.imageViewAdd:
-        Toast.makeText(this, getResources().getString(R.string.dummy_action), Toast.LENGTH_SHORT).show();
-        break;
-    default:
-        break;
-}
+        switch (v.getId()) {
+            case R.id.imageViewMan:
+                Toast.makeText(this, getResources().getString(R.string.action_clicke_profile), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.imageViewSettings:
+                Toast.makeText(this, getResources().getString(R.string.action_clicke_settings), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.imageViewMarker:
+                Toast.makeText(this, getResources().getString(R.string.action_clicke_location), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.imageViewAdd:
+                Toast.makeText(this, getResources().getString(R.string.action_clicke_add_location), Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public interface Adaptable {
+        public RecyclerAdapter getAdapter();
+    }
+
+    private List<GasModel> initGasModels() {
+        List<GasModel> gasModels = new ArrayList<>();
+        InputStreamReader is = null;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                is = new InputStreamReader(getAssets()
+                        .open(getResources().getString(R.string.csv_file_name)), StandardCharsets.UTF_8);
+                gasModels = DataHelper.parse(is, DataHelper.DEFAULT_SEPARATOR, this);
+                return gasModels;
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.min_required_sdk), Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+        return gasModels;
     }
 }

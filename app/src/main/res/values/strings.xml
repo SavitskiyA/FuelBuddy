@@ -5,8 +5,8 @@
     <string name="by_distance">По расстоянию</string>
     <string name="by_cost">По стоимости</string>
     <string name="symbol_ruble_Java">\u20BD</string>
-    <string name="google__play_service_error">Can\'t connect to play services</string>
-    <string name="google_play_service_available">Google Play Services available</string>
+    <string name="google__play_service_error">Нет соединения с google play service</string>
+    <string name="google_play_service_available">Google Play Services доступно</string>
     <string name="csv_file_name">zapravki.csv</string>
     <string name="map_type_normal">Normal</string>
     <string name="map_type_terrain">Terrain</string>
@@ -19,8 +19,13 @@
     <string name="text_test_name">Автозаправка Shell</string>
     <string name="text_test_distance">1,3</string>
     <string name="text_km">км</string>
-    <string name="min_required_sdk">Min required SDK version is 4.4 KITKAT</string>
+    <string name="min_required_sdk">Минимально требуемая версия SDK is 4.4 KITKAT</string>
     <string name="gas_data_source_error">Gas station data source error</string>
-    <string name="dummy_action">Dummy-action</string>
-
+    <string name="action_clicke_profile">Профиль</string>
+    <string name="action_clicke_settings">Настройки</string>
+    <string name="action_clicke_location">Найти заправку на карте</string>
+    <string name="action_clicke_add_location">Добавить заправку</string>
+    <string name="moscow">Москва</string>
+    <string name="another_region">Информация по заправкам доступна только по г. Москва</string>
+    <string name="fragment_attach_error">Ошибка получения MapsActivity в onAttach()</string>
 </resources>
