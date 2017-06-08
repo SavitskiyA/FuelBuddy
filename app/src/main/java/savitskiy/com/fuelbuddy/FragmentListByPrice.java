@@ -25,7 +25,7 @@ import java.util.List;
  * Created by Andrey on 05.06.2017.
  */
 
-public class FragmentListByPrice extends Fragment implements MapsActivity.Adaptable {
+public class FragmentListByPrice extends Fragment implements MapsActivity.FragmentFilterable {
     private List<GasModel> gasModels;
     private RecyclerView recyclerView;
 
@@ -44,35 +44,15 @@ public class FragmentListByPrice extends Fragment implements MapsActivity.Adapta
     };
 
     public FragmentListByPrice() {
-
+        this.gasModels = new ArrayList<GasModel>();
     }
-
-    private List<GasModel> initGasModels() {
-        List<GasModel> gasModels = new ArrayList<>();
-        InputStreamReader is = null;
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                is = new InputStreamReader(getActivity().getAssets()
-                        .open(getResources().getString(R.string.csv_file_name)), StandardCharsets.UTF_8);
-                gasModels = DataHelper.parse(is, DataHelper.DEFAULT_SEPARATOR, getContext());
-                return gasModels;
-            } else {
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string.min_required_sdk), Toast.LENGTH_SHORT).show();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
-        }
-        return gasModels;
-    }
-
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_by_price_layout, null);
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
-//        gasModels = initGasModels();
+
         if (markerListener != null && gasModels != null) {
             Collections.sort(gasModels, sortByCost);
             recyclerAdapter = new RecyclerAdapter(gasModels, getContext(), markerListener);
@@ -93,7 +73,7 @@ public class FragmentListByPrice extends Fragment implements MapsActivity.Adapta
         super.onAttach(activity);
         if (activity instanceof RecyclerAdapter.MarkerListener) {
             markerListener = (RecyclerAdapter.MarkerListener) activity;
-            gasModels = markerListener.getModels();
+            gasModels.addAll(markerListener.getModels());
         } else {
             Toast.makeText(getContext(), getResources().getString(R.string.fragment_attach_error), Toast.LENGTH_SHORT).show();
         }
@@ -101,8 +81,7 @@ public class FragmentListByPrice extends Fragment implements MapsActivity.Adapta
 
 
     @Override
-    public RecyclerAdapter getAdapter() {
-        return recyclerAdapter;
+    public void filter(CharSequence query) {
+        recyclerAdapter.getFilter().filter(query);
     }
-
 }

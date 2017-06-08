@@ -29,8 +29,8 @@ import java.util.List;
  * Created by Andrey on 05.06.2017.
  */
 
-public class FragmentListByDistance extends Fragment implements MapsActivity.Adaptable {
-    private List<GasModel> gasModels;
+public class FragmentListByDistance extends Fragment implements MapsActivity.FragmentFilterable{
+
     private RecyclerView recyclerView;
 
     public RecyclerAdapter getRecyclerAdapter() {
@@ -47,27 +47,10 @@ public class FragmentListByDistance extends Fragment implements MapsActivity.Ada
         }
     };
 
+    private List<GasModel> gasModels;
+
     public FragmentListByDistance() {
-
-    }
-
-    private List<GasModel> initGasModels() {
-        List<GasModel> gasModels = new ArrayList<>();
-        InputStreamReader is = null;
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                is = new InputStreamReader(getActivity().getAssets()
-                        .open(getResources().getString(R.string.csv_file_name)), StandardCharsets.UTF_8);
-                gasModels = DataHelper.parse(is, DataHelper.DEFAULT_SEPARATOR, getContext());
-                return gasModels;
-            } else {
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string.min_required_sdk), Toast.LENGTH_SHORT).show();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
-        }
-        return gasModels;
+        this.gasModels=new ArrayList<GasModel>();
     }
 
 
@@ -85,7 +68,7 @@ public class FragmentListByDistance extends Fragment implements MapsActivity.Ada
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(recyclerAdapter);
-        } else {
+                    } else {
             Toast.makeText(getContext(), getResources().getString(R.string.fragment_attach_error), Toast.LENGTH_SHORT).show();
         }
 
@@ -98,7 +81,7 @@ public class FragmentListByDistance extends Fragment implements MapsActivity.Ada
         super.onAttach(activity);
         if (activity instanceof RecyclerAdapter.MarkerListener) {
             markerListener = (RecyclerAdapter.MarkerListener) activity;
-            gasModels = markerListener.getModels();
+            this.gasModels.addAll(markerListener.getModels());
         } else {
             Toast.makeText(getContext(), getResources().getString(R.string.fragment_attach_error), Toast.LENGTH_SHORT).show();
         }
@@ -106,7 +89,7 @@ public class FragmentListByDistance extends Fragment implements MapsActivity.Ada
 
 
     @Override
-    public RecyclerAdapter getAdapter() {
-        return recyclerAdapter;
+    public void filter(CharSequence query) {
+        recyclerAdapter.getFilter().filter(query);
     }
 }

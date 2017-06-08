@@ -82,7 +82,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         return gasModels.size();
     }
 
-
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
         private TextView textViewCost, textViewHours, textViewName, textViewAdress, textViewDistance;

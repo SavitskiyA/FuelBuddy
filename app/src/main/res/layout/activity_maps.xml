@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_bottom_sheet_hight"
         app:behavior_peekHeight="@dimen/size_bottom_sheet_peek_hight"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+        app:layout_behavior="@string/view_pager_bottom_sheet_behavior">
 
         <ImageView
             android:layout_width="match_parent"
@@ -46,6 +46,20 @@
             app:tabSelectedTextColor="@color/colorTabSelectedText"
             app:tabTextColor="@color/сolorTabText"
             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <ImageView
+                android:id="@+id/tab_arrow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_tab_arrow" />
+        </LinearLayout>
 
     </FrameLayout>
 

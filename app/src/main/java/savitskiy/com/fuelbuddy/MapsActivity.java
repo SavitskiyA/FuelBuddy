@@ -33,47 +33,40 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import biz.laenger.android.vpbs.BottomSheetUtils;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, RecyclerAdapter.MarkerListener, View.OnClickListener {
-    private View bottomSheet;
-    private BottomSheetBehavior mBottomSheetBehavior;
     private GoogleMap mGoogleMap;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-
     private List<GasModel> gasModels;
     private Map<GasModel, Marker> map;
     private Map<Marker, GasModel> mMap;
-    private ImageView imageViewMan, imageViewSettings, imageViewMarker, imageViewAdd;
+    private ImageView imageViewMan, imageViewSettings, imageViewMarker, imageViewAdd, tabArrow;
     private EditText editTextSearch;
-    private SectionPageAdapter sectionPageAdapter;
-    private Adaptable adaptableFragment;
-    private boolean fragmentAttached;
+    private int curPagePosition;
+    private SectionPageAdapter sectionsPagerAdapter;
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        //Initialize google map
         initGoogleMap();
-
-
-        //
         gasModels = initGasModels();
-
         map = new HashMap<>();
         mMap = new HashMap<>();
+        findViews();
+        setListners();
+        setupBottomSheet();
+    }
 
-        bottomSheet = findViewById(R.id.bottom_sheet);
+    private void findViews() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         imageViewMan = (ImageView) findViewById(R.id.imageViewMan);
         imageViewSettings = (ImageView) findViewById(R.id.imageViewSettings);
@@ -81,29 +74,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         imageViewAdd = (ImageView) findViewById(R.id.imageViewAdd);
         editTextSearch = (EditText) findViewById(R.id.editTextSearch);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabArrow = (ImageView) findViewById(R.id.tab_arrow);
+    }
 
-
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-
+    private void setListners() {
         imageViewMan.setOnClickListener(this);
         imageViewSettings.setOnClickListener(this);
         imageViewMarker.setOnClickListener(this);
         imageViewAdd.setOnClickListener(this);
-
-        sectionPageAdapter = new SectionPageAdapter(getSupportFragmentManager(), this);
-        viewPager.setAdapter(sectionPageAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-
-
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (position == 0) {
+                    tabArrow.setTranslationX(positionOffsetPixels / 2);
+                } else {
+                    tabArrow.setTranslationX(tabArrow.getWidth());
+                }
 
+                curPagePosition = position;
             }
 
             @Override
             public void onPageSelected(int position) {
-                sectionPageAdapter.notifyDataSetChanged();
+                curPagePosition = position;
             }
 
             @Override
@@ -111,8 +104,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-
-
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -121,7 +112,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (fragmentAttached) adaptableFragment.getAdapter().getFilter().filter(s);
+                FragmentFilterable fragment = (FragmentFilterable) sectionsPagerAdapter.getFragment(curPagePosition);
+                fragment.filter(s);
             }
 
             @Override
@@ -129,22 +121,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-
     }
 
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        super.onAttachFragment(fragment);
-        if (fragment instanceof Adaptable) {
-            this.adaptableFragment = (Adaptable) fragment;
-            fragmentAttached = true;
-        }
 
+    private void setupBottomSheet() {
+        sectionsPagerAdapter = new SectionPageAdapter(getSupportFragmentManager(), this);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+        BottomSheetUtils.setupViewPager(viewPager);
     }
+
 
     /**
      * Obtain the SupportMapFragment and get notified when the map is ready to be used.
      */
+
     private void initGoogleMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -252,7 +243,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.gas_station));
         markerOptions.infoWindowAnchor(3, 0);
         markerOptions.title(address);
-
         markerOptions.position(new LatLng(lat, lng));
         return mGoogleMap.addMarker(markerOptions);
     }
@@ -268,9 +258,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 Toast.makeText(this, getResources().getString(R.string.another_region), Toast.LENGTH_SHORT).show();
             }
-
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
 
     }
@@ -319,9 +307,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public interface Adaptable {
-        public RecyclerAdapter getAdapter();
-    }
 
     private List<GasModel> initGasModels() {
         List<GasModel> gasModels = new ArrayList<>();
@@ -340,5 +325,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
         return gasModels;
+    }
+
+    public interface FragmentFilterable {
+        public void filter(CharSequence query);
     }
 }
